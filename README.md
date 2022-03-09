@@ -175,7 +175,7 @@ eyes
 
 ### Generate Metadata
 
-This command takes the above configuration as input, and the `combinations` returned from `generateImages` and creates metadata `{0}.json` files for all images, which are written to a folder location `config.files.outputMetadataPath`.
+This command takes the above nftconfig as input, and the `combinations` returned from `generateImages` and creates metadata `{0}.json` files for all images, which are written to a folder location `config.files.outputMetadataPath`.
 
 ```
 await nftGenerator.generateMetadata({
