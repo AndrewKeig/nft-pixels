@@ -76,8 +76,8 @@ const nftConfig = {
   },
   "files": {
     "imageSize": {
-      "width": 212,
-      "height": 212
+      "width": 350,
+      "height": 350
     },
     "outputFileType": "png",
     "deleteFolders": false,
@@ -135,7 +135,7 @@ const nftConfig = {
 ## Usage
 
 ### Generate Images
-This command takes the above configuration as input, and creates images `{0}.png` files for all images, written to a folder `config.files.outputImagePath`.  `combinations` contains all the images generated (with traits), and can be used to `generateMetadata`
+This command takes the above nftconfig as input, and creates images `{0}.png` files for all images, written to a folder `config.files.outputImagePath`.  `combinations` contains all the images generated (with traits), and can be used to `generateMetadata`
 
 `const combinations = await nftGenerator.generateImages(nftConfig)`
 
