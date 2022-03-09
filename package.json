@@ -1,0 +1,12 @@
+{
+  "name": "nft-pixels",
+  "version": "1.0.0",
+  "description": "generating nfts with images programatically",
+  "main": "index.js",
+  "repository": "https://github.com/andrewkeig/nft-pixels",
+  "license": "MIT",
+  "bin": {
+    "nft-generator": "./bin/index.js"
+  },
+  "dependencies": {}
+}
