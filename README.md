@@ -6,15 +6,17 @@ This can be used with for example, `hardhat` or `truffle` as a task to generate 
 - Generates images, via configured traits
 - Configure rarity, via weights
 - Control size and type of image output
-- Supports traits, with same name
 - Print report of traits used
 - Seperately create images and metadata
 - Metadata can be correctly configured with `IPFS` hashes, returned from a pinning service e.g. (`pinata`, `nft storage`)
 
 ## Install
-`npm install nft-pixels` --save-dev
+`npm install nft-pixels --save-dev`
 
 ## Setup
+`nft-pixels` has been configured to be used programatically, for example, in a `hardhat` or `truffle` task.
+
+In order to use this module you will need a folder of images/image layers; laid out like so.
 
 ```
 {folder}
@@ -33,12 +35,32 @@ This can be used with for example, `hardhat` or `truffle` as a task to generate 
     --- trait3.png
 ```
 
+### Generate nftconfig
 
-`nft-pixels` has been configured to be used programatically, for example, in a `hardhat` task.
+You will also need a nftconfig file; this command generates a skeleton nftConfig file, it reads the file system traits, above and generates a config file.
 
-The API for this module contains two functions, both require you pass the following configuration as input
+```
+await nftGenerator.generateConfig({
+    metadata: {
+      name: "NFT",
+      description: "NFT collection",
+      image: "ipfs://*********/",
+      externalUrl: "",
+      background_color: "",
+      animation_url: "",
+      youtube_url: "",
+      includeCreatedDate: "Birthday",
+    },
+    traits: '/traits/',
+    outputImagePath: '/images',
+    outputMetadataPath: '/metadata',
+    configOutputPath: '/nftConfig.json'
+  })
+```
 
-The order of the traits structure is important, the images will be laid out based on this order
+The file generated looks like so, this can be reused to re-generate your images.
+
+The order of the traits structure is important, the images will be laid out based on the trait order
 
 ```
 const nftConfig = {
@@ -163,29 +185,6 @@ await nftGenerator.generateMetadata({
       image: `ipfs://${imageResponse?.IpfsHash}`
     }
   }, combinations)
-```
-
-### Generate Metadata
-
-This command generates a skeleton nftConfig file, it reads the file system traits, and generates the config above.
-
-```
-await nftGenerator.generateConfig({
-    metadata: {
-      name: "NFT",
-      description: "NFT collection",
-      image: "ipfs://*********/",
-      externalUrl: "",
-      background_color: "",
-      animation_url: "",
-      youtube_url: "",
-      includeCreatedDate: "Birthday",
-    },
-    traits: '/traits/',
-    outputImagePath: '/images',
-    outputMetadataPath: '/metadata',
-    configOutputPath: '/nftConfig.json'
-  })
 ```
 
 
