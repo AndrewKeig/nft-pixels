@@ -40,7 +40,7 @@ In order to use this module you will need a folder of images/image layers; laid 
 You will also need a nftconfig file; this command generates a skeleton nftConfig file, it reads the file system traits, above and generates a config file.
 
 ```
-await nftGenerator.generateConfig({
+await nftpixels.generateConfig({
     metadata: {
       name: "NFT",
       description: "NFT collection",
@@ -137,7 +137,7 @@ const nftConfig = {
 ### Generate Images
 This command takes the above nftconfig as input, and creates images `{0}.png` files for all images, written to a folder `config.files.outputImagePath`.  `combinations` contains all the images generated (with traits), and can be used to `generateMetadata`
 
-`const combinations = await nftGenerator.generateImages(nftConfig)`
+`const combinations = await nftpixels.generateImages(nftConfig)`
 
 
 #### Report
@@ -178,7 +178,7 @@ eyes
 This command takes the above nftconfig as input, and the `combinations` returned from `generateImages` and creates metadata `{0}.json` files for all images, which are written to a folder location `config.files.outputMetadataPath`.
 
 ```
-await nftGenerator.generateMetadata({
+await nftpixels.generateMetadata({
     ...nftConfig,
     metadata: {
       ...config.metadata,
@@ -203,7 +203,7 @@ task("pin", "generate and pin images and metadata to pinata").setAction(async (_
 
   // generate images
   console.log('generating images')
-  const combinations = await nftGenerator.generateImages(nftConfig)
+  const combinations = await nftpixels.generateImages(nftConfig)
 
   if (pinToPinata) {
     // pin images via pinata
@@ -217,7 +217,7 @@ task("pin", "generate and pin images and metadata to pinata").setAction(async (_
 
   // generate metadata, pass image via IpfsHash
   console.log('generating metadata')
-  await nftGenerator.generateMetadata({
+  await nftpixels.generateMetadata({
     ...nftConfig,
     metadata: {
       ...nftConfig.metadata,
