@@ -1,6 +1,6 @@
 {
   "name": "nft-pixels",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "generating nfts with images programatically",
   "main": "index.js",
   "repository": "https://github.com/andrewkeig/nft-pixels",
@@ -8,5 +8,7 @@
   "bin": {
     "nft-generator": "./bin/index.js"
   },
-  "dependencies": {}
+  "dependencies": {
+    "canvas": "^2.9.0"
+  }
 }
