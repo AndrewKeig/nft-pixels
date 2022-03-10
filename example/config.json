@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "name": "NFT",
+    "description": "NFT collection",
+    "image": "ipfs://***/",
+    "externalUrl": "",
+    "background_color": "",
+    "animation_url": "",
+    "youtube_url": "",
+    "includeCreatedDate": "Birthday"
+  },
+  "files": {
+    "imageSize": {
+      "width": 350,
+      "height": 350
+    },
+    "outputFileType": "png",
+    "deleteFolders": true,
+    "printReport": true,
+    "attributesPath": "/Users/airasoul/projects/nft-pixels/example/traits/",
+    "outputImagePath": "/Users/airasoul/projects/nft-pixels/example/images",
+    "outputMetadataPath": "/Users/airasoul/projects/nft-pixels/example/metadata"
+  },
+  "traits": {
+    "backgrounds": [
+      {
+        "file": "brown.png",
+        "numberOfItems": 20
+      },
+      {
+        "file": "lemon.png",
+        "numberOfItems": 20
+      }
+    ],
+    "eyes": [
+      {
+        "file": "black-big-square.png",
+        "numberOfItems": 20
+      },
+      {
+        "file": "black-small-circle.png",
+        "numberOfItems": 20
+      }
+    ],
+    "hair": [
+      {
+        "file": "black-short.png",
+        "numberOfItems": 20
+      },
+      {
+        "file": "lemon-straight.png",
+        "numberOfItems": 20
+      }
+    ],
+    "mouth": [
+      {
+        "file": "black-smile.png",
+        "numberOfItems": 20
+      },
+      {
+        "file": "black-straight.png",
+        "numberOfItems": 20
+      }
+    ]
+  }
+}

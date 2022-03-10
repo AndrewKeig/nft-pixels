@@ -1,14 +1,15 @@
 # nft-pixels
-`nft-pixels` allows one, to programatically, generate NFT images and their corresponding metadata.
+`nft-pixels` allows one, to programatically, generate NFT images and their corresponding metadata from a configuration file.
 
-This can be used with for example, `hardhat` or `truffle` as a task to generate and then pin nfts.
+There are various NFT generator projects out there, this project tries to solve some of the configuration issues that exist after the nfts have been generated.
 
-- Generates images, via configured traits
+- Generates unique images, via configured traits
 - Configure rarity, via weights
 - Control size and type of image output
+- Aims to be opensea compatible
 - Print report of traits used
-- Seperately create images and metadata
-- Metadata can be correctly configured with `IPFS` hashes, returned from a pinning service e.g. (`pinata`, `nft storage`)
+- Seperately creates images and metadata
+- Metadata can be correctly configured with `IPFS` hashes, that are returned from a pinning service e.g. (`pinata`, `nft storage`)
 
 ## Install
 `npm install nft-pixels --save-dev`
@@ -16,7 +17,7 @@ This can be used with for example, `hardhat` or `truffle` as a task to generate 
 ## Setup
 `nft-pixels` has been configured to be used programatically, for example, in a `hardhat` or `truffle` task.
 
-In order to use this module you will need a folder of images/image layers; laid out like so.
+In order to run `nft-pixels` you must configure a folder structure, as below, see the repository example folder for a concrete example.
 
 ```
 {folder}
@@ -35,7 +36,7 @@ In order to use this module you will need a folder of images/image layers; laid 
     --- trait3.png
 ```
 
-### Generate nftconfig
+### nftpixels.generateConfig(config)
 
 You will also need a nftconfig file; this command generates a skeleton nftConfig file, it reads the file system traits, above and generates a config file.
 
@@ -45,7 +46,7 @@ await nftpixels.generateConfig({
       name: "NFT",
       description: "NFT collection",
       image: "ipfs://*********/",
-      externalUrl: "",
+      externalUrl: "url of dapp providing an nft minting function",
       background_color: "",
       animation_url: "",
       youtube_url: "",
@@ -67,74 +68,58 @@ const nftConfig = {
   "metadata": {
     "name": "NFT",
     "description": "NFT collection",
-    "image": "ipfs://*********/",
-    "externalUrl": "http://nft-collection.com",
+    "image": "ipfs://***/",
+    "externalUrl": "",
     "background_color": "",
     "animation_url": "",
     "youtube_url": "",
     "includeCreatedDate": "Birthday"
   },
   "files": {
-    "imageSize": {
-      "width": 350,
-      "height": 350
-    },
+    "imageSize": { "width": 350, "height": 350 },
     "outputFileType": "png",
     "deleteFolders": false,
     "printReport": true,
-    "attributesPath": "path to traits",
-    "outputImagePath": "path to image output folder",
-    "outputMetadataPath": "path to metadata folder"
+    "attributesPath": "/Users/airasoul/projects/nft-pixels/example/traits/",
+    "outputImagePath": "/Users/airasoul/projects/nft-pixels/example/images",
+    "outputMetadataPath": "/Users/airasoul/projects/nft-pixels/example/metadata"
   },
   "traits": {
     "backgrounds": [
-      {
-        "file": "brown.png",
-        "numberOfItems": 1250
-      },
-      {
-        "file": "lemon.png",
-        "numberOfItems": 1250
-      }
-    ],
-    "hair": [
-      {
-        "file": "black.png",
-        "numberOfItems": "300"
-      },
-      {
-        "file": "yellow.png",
-        "numberOfItems": "300"
-      }
-    ],
-    "mouth": [
-      {
-        "file": "black-grin.png",
-        "numberOfItems": "500"
-      },
-      {
-        "file": "black-smile.png",
-        "numberOfItems": "500"
-      }
+      { "file": "brown.png", "numberOfItems": 1000 },
+      { "file": "lemon.png", "numberOfItems": 1000 }
     ],
     "eyes": [
-      {
-        "file": "black-big-square.png",
-        "numberOfItems": "100"
-      },
-      {
-        "file": "black-wink.png",
-        "numberOfItems": 2000
-      }
+      { "file": ".DS_Store", "numberOfItems": 1000 },
+      { "file": "black-big-square.png", "numberOfItems": 1000 },
+      { "file": "black-small-circle.png", "numberOfItems": 1000 }
+    ],
+    "hair": [
+      { "file": "black-short.png", "numberOfItems": 1000 },
+      { "file": "lemon-straight.png", "numberOfItems": 1000 }
+    ],
+    "mouth": [
+      { "file": ".DS_Store", "numberOfItems": 1000 },
+      { "file": "black-smile.png", "numberOfItems": 1000 },
+      { "file": "black-straight.png", "numberOfItems": 1000 }
     ]
   }
 }
 
+
 ```
 
-## Usage
+### Weights and rarity
+The weight algorithim, is simple, it randomly selects traits; traits with `numberOfItems` set to larger values are more likely to be selected; `numberOfItems` is the maximum number of images we could generate, not the minimum number.
 
-### Generate Images
+e.g. if we set `numberOfItems` to 1 we would generate a single image with this trait.  a `numberOfItems` set to 2000, would mean that you could get 2000 images with this trait, if the number of unique images generated is > 2000.
+
+So if you wanted a trait with a rarity of 10 images; set `numberOfItems` to 10.  We generate a report after creating images, so you can play around with the numbers and see whats been generated via the report.
+
+
+## API
+
+### nftpixels.generateImages(nftConfig)`
 This command takes the above nftconfig as input, and creates images `{0}.png` files for all images, written to a folder `config.files.outputImagePath`.  `combinations` contains all the images generated (with traits), and can be used to `generateMetadata`
 
 `const combinations = await nftpixels.generateImages(nftConfig)`
@@ -173,24 +158,34 @@ eyes
 ```
 
 
-### Generate Metadata
+### nftpixels.generateMetadata(config, combinations)
 
 This command takes the above nftconfig as input, and the `combinations` returned from `generateImages` and creates metadata `{0}.json` files for all images, which are written to a folder location `config.files.outputMetadataPath`.
 
 ```
-await nftpixels.generateMetadata({
-    ...nftConfig,
-    metadata: {
-      ...config.metadata,
-      image: `ipfs://${imageResponse?.IpfsHash}`
-    }
-  }, combinations)
+await nftpixels.generateMetadata(nftConfig, combinations)
+```
+
+
+### nftpixels.createGif(inputFolder, outputFolder)
+
+This command allows you to create an animated gif of all the images you have generated.
+
+```
+await nftpixels.createGif(inputFolder, outputFolder)
 ```
 
 
 ### Hardhat Example tasks
 
-This is a simple example of this modules usecase, this `hardhat` task generates nfts, and then pins the nfts to `IPFS` via `Pinata`
+This is an example of this modules usecase. Here we have a `hardhat` task which:
+- generates nft images, returns all combinations created,
+- pins images to `IPFS` via `Pinata`
+- generates metadata and injects the retuned `IpfsHash`, passes combinations created
+- pins metadata to `IPFS` via `Pinata`
+- update config file used by the smart contract with a image `IpfsHash`
+
+So, you are now ready to deploy your smart contract, no further configuration is required, and everything is setup correctly.
 
 ```
 task("pin", "generate and pin images and metadata to pinata").setAction(async (_, hre) => {
