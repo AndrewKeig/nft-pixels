@@ -80,9 +80,9 @@ const nftConfig = {
     "outputFileType": "png",
     "deleteFolders": false,
     "printReport": true,
-    "attributesPath": "/Users/airasoul/projects/nft-pixels/example/traits/",
-    "outputImagePath": "/Users/airasoul/projects/nft-pixels/example/images",
-    "outputMetadataPath": "/Users/airasoul/projects/nft-pixels/example/metadata"
+    "attributesPath": "example/traits/",
+    "outputImagePath": "example/images",
+    "outputMetadataPath": "example/metadata"
   },
   "traits": {
     "backgrounds": [
