@@ -169,7 +169,7 @@ await nftpixels.generateMetadata(nftConfig, combinations)
 
 ### nftpixels.createGif(inputFolder, outputFolder)
 
-This command allows you to create an animated gif of all the images you have generated.
+This command allows you to create an animated gif of the images you have generated, simply takes the first 20 images and makes a gif.
 
 ```
 await nftpixels.createGif(inputFolder, outputFolder)
