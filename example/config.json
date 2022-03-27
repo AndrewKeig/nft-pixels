@@ -25,41 +25,41 @@
     "backgrounds": [
       {
         "file": "brown.png",
-        "numberOfItems": 20
+        "numberOfItems": 100
       },
       {
         "file": "lemon.png",
-        "numberOfItems": 20
+        "numberOfItems": 100
       }
     ],
     "eyes": [
       {
         "file": "black-big-square.png",
-        "numberOfItems": 20
+        "numberOfItems": 100
       },
       {
         "file": "black-small-circle.png",
-        "numberOfItems": 20
+        "numberOfItems": 100
       }
     ],
     "hair": [
       {
         "file": "black-short.png",
-        "numberOfItems": 20
+        "numberOfItems": 100
       },
       {
         "file": "lemon-straight.png",
-        "numberOfItems": 20
+        "numberOfItems": 100
       }
     ],
     "mouth": [
       {
         "file": "black-smile.png",
-        "numberOfItems": 20
+        "numberOfItems": 100
       },
       {
         "file": "black-straight.png",
-        "numberOfItems": 20
+        "numberOfItems": 100
       }
     ]
   }

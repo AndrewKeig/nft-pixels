@@ -1,4 +1,4 @@
-const { combineAttributes, calculateNumberOfAttributes, findSmallestArray } = require('./lib/shared')
+const { combineAttributes, calculateNumberOfAttributes, findSmallestArray, uniqueCombinations } = require('./lib/shared')
 const { createMetadata, createMetadataFolder, deleteMetadataFolder } = require('./lib/metadata')
 const { createImages, createImageFolder, deleteImageFolder } = require('./lib/images')
 const { createConfigFile } = require('./lib/config')
@@ -10,11 +10,12 @@ exports.generateImages = async function (config) {
   const attributes = await calculateNumberOfAttributes(config, traits)
   const maxNftsToGenerate = findSmallestArray(traits, attributes)
   const combinations = await combineAttributes(traits, attributes, maxNftsToGenerate)
+  const unique = await uniqueCombinations(combinations)
 
   await deleteImageFolder(config)
   await createImageFolder(config)
-  await createImages(config, combinations, traits)
-  return combinations
+  await createImages(config, unique, traits)
+  return unique
 }
 
 exports.generateMetadata = async function (config, combinations) {

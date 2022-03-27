@@ -1,6 +1,6 @@
 {
   "name": "nft-pixels",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "generating nfts with images programatically",
   "main": "index.js",
   "repository": "https://github.com/andrewkeig/nft-pixels",
