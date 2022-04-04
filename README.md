@@ -41,22 +41,25 @@ In order to run `nft-pixels` you must configure a folder structure, as below, se
 You will also need a nftconfig file; this command generates a skeleton nftConfig file, it reads the file system traits, above and generates a config file.
 
 ```
+const path = require('path')
+const nftpixels = require('nft-pixels')
+
 await nftpixels.generateConfig({
-    metadata: {
-      name: "NFT",
-      description: "NFT collection",
-      image: "ipfs://*********/",
-      externalUrl: "url of dapp providing an nft minting function",
-      background_color: "",
-      animation_url: "",
-      youtube_url: "",
-      includeCreatedDate: "Birthday",
-    },
-    traits: '/traits/',
-    outputImagePath: '/images',
-    outputMetadataPath: '/metadata',
-    configOutputPath: '/nftConfig.json'
-  })
+  metadata: {
+    name: "NFT",
+    description: "NFT collection",
+    image: "ipfs://***/",
+    externalUrl: "",
+    background_color: "",
+    animation_url: "",
+    youtube_url: "",
+    includeCreatedDate: "Birthday",
+  },
+  traits: path.join(__dirname, '/traits/'),
+  outputImagePath: path.join(__dirname, '/images'),
+  outputMetadataPath: path.join(__dirname, '/metadata'),
+  configOutputPath: path.join(__dirname, '/config.json')
+})
 ```
 
 The file generated looks like so, this can be reused to re-generate your images.
@@ -76,32 +79,57 @@ const nftConfig = {
     "includeCreatedDate": "Birthday"
   },
   "files": {
-    "imageSize": { "width": 350, "height": 350 },
+    "imageSize": {
+      "width": 350,
+      "height": 350
+    },
     "outputFileType": "png",
-    "deleteFolders": false,
+    "deleteFolders": true,
     "printReport": true,
-    "attributesPath": "example/traits/",
-    "outputImagePath": "example/images",
-    "outputMetadataPath": "example/metadata"
+    "attributesPath": "/traits/",
+    "outputImagePath": "/images/",
+    "outputMetadataPath": "/metadata/"
   },
   "traits": {
     "backgrounds": [
-      { "file": "brown.png", "numberOfItems": 1000 },
-      { "file": "lemon.png", "numberOfItems": 1000 }
+      {
+        "file": "brown.png",
+        "numberOfItems": 20
+      },
+      {
+        "file": "lemon.png",
+        "numberOfItems": 20
+      }
     ],
     "eyes": [
-      { "file": ".DS_Store", "numberOfItems": 1000 },
-      { "file": "black-big-square.png", "numberOfItems": 1000 },
-      { "file": "black-small-circle.png", "numberOfItems": 1000 }
+      {
+        "file": "black-big-square.png",
+        "numberOfItems": 20
+      },
+      {
+        "file": "black-small-circle.png",
+        "numberOfItems": 20
+      }
     ],
     "hair": [
-      { "file": "black-short.png", "numberOfItems": 1000 },
-      { "file": "lemon-straight.png", "numberOfItems": 1000 }
+      {
+        "file": "black-short.png",
+        "numberOfItems": 20
+      },
+      {
+        "file": "lemon-straight.png",
+        "numberOfItems": 20
+      }
     ],
     "mouth": [
-      { "file": ".DS_Store", "numberOfItems": 1000 },
-      { "file": "black-smile.png", "numberOfItems": 1000 },
-      { "file": "black-straight.png", "numberOfItems": 1000 }
+      {
+        "file": "black-smile.png",
+        "numberOfItems": 20
+      },
+      {
+        "file": "black-straight.png",
+        "numberOfItems": 20
+      }
     ]
   }
 }
@@ -131,7 +159,7 @@ If you have `printReport` set to `true` this function will print to console, a r
 
 ```
 ***********************************
-Nft Generator created 1000 nfts
+Nft Generator created 16 nfts
 
 ***********************************
 Trait report
@@ -139,20 +167,20 @@ Trait report
 ***********************************
 
 backgrounds
-- 406 images include brown
-- 18 images include lemon
-
-hair
-- 99 images include black-long
-- 300 images include black-shaved
-
-mouth
-- 302 images include black-grin
-- 310 images include black-smile
+- 8 images include lemon
+- 8 images include brown
 
 eyes
-- 62 images include black-big-square
-- 33 images include black-wink
+- 8 images include black-small-circle
+- 8 images include black-big-square
+
+hair
+- 8 images include lemon-straight
+- 8 images include black-short
+
+mouth
+- 8 images include black-straight
+- 8 images include black-smile
 
 ***********************************
 ```
@@ -190,52 +218,57 @@ So, you are now ready to deploy your smart contract, no further configuration is
 ```
 task("pin", "generate and pin images and metadata to pinata").setAction(async (_, hre) => {
   const pinToPinata = true
-  let imageResponse;
-  let metaResponse;
+  const createNfts = true
+  let imageResponse
+  let metaResponse
 
-  // create a stream pointing at your image collection
   const pinata = pinataSdk(PINATA_KEY, PINATA_SECRET)
 
-  // generate images
-  console.log('generating images')
-  const combinations = await nftpixels.generateImages(nftConfig)
+  let combinations
+
+  if (createNfts) {
+    console.log('generate images')
+    combinations = await nftGenerator.generateImages(nftConfig)
+  }
 
   if (pinToPinata) {
-    // pin images via pinata
     console.log('pin images via pinata')
     imageResponse = await pinata.pinFromFS(nftConfig.files.outputImagePath, {
       pinataMetadata: {
         name: `${config.name}-images`
       }
     })
+    console.log(imageResponse)
   }
 
-  // generate metadata, pass image via IpfsHash
-  console.log('generating metadata')
-  await nftpixels.generateMetadata({
-    ...nftConfig,
-    metadata: {
-      ...nftConfig.metadata,
-      image: `ipfs://${imageResponse?.IpfsHash}`
-    }
-  }, combinations)
+  if (createNfts) {
+    console.log('generate metadata, inject the IpfsHash from pinata into metadata')
+    await nftGenerator.generateMetadata({
+      ...nftConfig,
+      metadata: {
+        ...nftConfig.metadata,
+        image: `ipfs://${imageResponse?.IpfsHash}`
+      }
+    }, combinations)
+  }
 
   if (pinToPinata) {
-    // pin metadata via pinata
     console.log('pin metadata via pinata')
     metaResponse = await pinata.pinFromFS(nftConfig.files.outputMetadataPath, {
       pinataMetadata: {
         name: `${config.name}-metadata`
       }
     })
+    console.log(metaResponse)
   }
 
-  // update config file with image IpfsHash
-  console.log('update config file with IpfsHash')
-  await fs.writeFile(path.join(__dirname, '../config/config.json'), JSON.stringify({
-    ...config,
-    baseTokenURI: `ipfs://${metaResponse?.IpfsHash}/`
-  }))
+  if (pinToPinata) {
+    console.log('update contract baseTokenURI in config file with ipfs metadata IpfsHash')
+    await fs.writeFile(path.join(__dirname, '../config/config.json'), JSON.stringify({
+      ...config,
+      baseTokenURI: `ipfs://${metaResponse?.IpfsHash}/`
+    }))
+  }
 })
 
 ```
